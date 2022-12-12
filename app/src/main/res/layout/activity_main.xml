@@ -7,6 +7,29 @@
     android:background="#EAEDED"
     tools:context=".MainActivity">
 
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/id3"
+        android:layout_width="301dp"
+        android:layout_height="45dp"
+        android:hint="Enter Branch"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintBottom_toTopOf="@+id/materialToolbar"
+        app:layout_constraintTop_toBottomOf="@+id/id2"
+        app:layout_constraintVertical_bias="0.052"
+        tools:layout_editor_absoluteX="55dp" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/id2"
+        android:layout_width="301dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="15dp"
+        android:hint="Enter  Name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintBottom_toTopOf="@+id/materialToolbar"
+        app:layout_constraintTop_toBottomOf="@+id/id"
+        app:layout_constraintVertical_bias="0.007"
+        tools:layout_editor_absoluteX="55dp" />
+
     <Button
         android:id="@+id/button"
         style="@android:style/Widget.Material.Button.Colored"
@@ -18,30 +41,13 @@
         android:backgroundTint="#0B0B0B"
         android:backgroundTintMode="add"
         android:text="Enter"
+        app:layout_constraintBottom_toTopOf="@+id/materialToolbar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:strokeColor="#AC1616"
-        tools:layout_editor_absoluteY="310dp" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="309dp"
-        android:layout_height="63dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.933">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter the ID"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintTop_toBottomOf="@+id/id3"
+        app:layout_constraintVertical_bias="0.107"
+        app:strokeColor="#AC1616" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar2"
@@ -62,5 +68,16 @@
         android:theme="?attr/actionBarTheme"
         tools:layout_editor_absoluteX="-2dp"
         tools:layout_editor_absoluteY="696dp" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/id"
+        android:layout_width="301dp"
+        android:layout_height="53dp"
+        android:hint="Enter the ID"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintBottom_toTopOf="@+id/materialToolbar"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2"
+        app:layout_constraintVertical_bias="0.225"
+        tools:layout_editor_absoluteX="55dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
