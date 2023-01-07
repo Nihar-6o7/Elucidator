@@ -10,41 +10,43 @@
     android:id="@+id/cv">
 
 
-<LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imageholder"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
             android:adjustViewBounds="true"
             android:padding="10dp"
             android:scaleType="fitXY" />
 
         <TextView
             android:id="@+id/theader"
-            android:layout_width="139dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:gravity="center"
             android:textColor="#000"
             android:textSize="15dp"
             android:textStyle="bold"
-            android:typeface="monospace"
-            android:gravity="center"/>
+            android:typeface="monospace" />
 
         <TextView
             android:id="@+id/colBranch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
             android:textColor="#000"
             android:textSize="15dp"
-            android:textStyle="bold"
-            android:gravity="center"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
