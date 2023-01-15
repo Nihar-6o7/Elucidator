@@ -48,9 +48,9 @@ public class ForgotPassword extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
-        Intent intent = new Intent(ForgotPassword.this,MainActivity.class);
-        startActivity(intent);
+    public boolean onSupportNavigateUp(){
+        onBackPressed();
+        return true;
     }
 
     private void forgotPassword(){

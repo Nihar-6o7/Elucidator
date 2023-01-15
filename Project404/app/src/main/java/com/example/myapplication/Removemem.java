@@ -33,8 +33,6 @@ import android.os.Bundle;
 import java.util.Locale;
 
 public class Removemem extends AppCompatActivity {
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
 
     Context context = this;
     EditText name2;
@@ -42,8 +40,8 @@ public class Removemem extends AppCompatActivity {
     Button remove;
     DatabaseReference db;
     ProgressDialog progressDialog;
-    FirebaseAuth mAuth1;
-    FirebaseUser mUser;
+    FirebaseAuth mAuth1,cAuth;
+    FirebaseUser mUser,cUser;
     String name;
     String email;
     String password;
@@ -98,7 +96,24 @@ public class Removemem extends AppCompatActivity {
     }
 
     private void deluser(){
-        AuthCredential credential = EmailAuthProvider.getCredential(email,password);
+        cAuth=FirebaseAuth.getInstance();
+        cAuth.signInWithEmailAndPassword(email,password);
+        cUser=FirebaseAuth.getInstance().getCurrentUser();
+        cUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    mAuth1.signInWithEmailAndPassword(MainActivity.em,MainActivity.pass);
+                    Toast.makeText(Removemem.this, "Removed "+name+" Successfully,", Toast.LENGTH_LONG).show();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(Removemem.this,"Something went wrong",Toast.LENGTH_SHORT).show();
+            }
+        });
+        /*AuthCredential credential = EmailAuthProvider.getCredential(email,password);
         if (mUser!= null) {
             mUser.reauthenticate(credential)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -109,6 +124,7 @@ public class Removemem extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
+                                                mAuth1.signInWithEmailAndPassword(MainActivity.em,MainActivity.pass);
                                                 Toast.makeText(Removemem.this, "Removed "+name+" Successfully,", Toast.LENGTH_LONG).show();
                                             }
                                         }
@@ -120,12 +136,11 @@ public class Removemem extends AppCompatActivity {
                                     });
                         }
                     });
-        }
+        }*/
     }
-
     /*@Override
     public void onBackPressed(){
         Intent intent = new Intent(Removemem.this,Admin.class);
-        startActivity(intent);*/
-    }
+        startActivity(intent);
+    }*/
 }

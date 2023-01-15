@@ -98,11 +98,7 @@ public class Addmember extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addmember);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.arrow_left);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFF2EEEB")));
+
 
         usn1=findViewById(R.id.usn3);
         email1=findViewById(R.id.email3);
@@ -154,6 +150,9 @@ public class Addmember extends AppCompatActivity {
                 if(usn.isEmpty() || name.isEmpty() || branch.isEmpty() || role.isEmpty() || phoneNo.isEmpty() || email.isEmpty() || imageUri == null){
                     Toast.makeText(Addmember.this,"Please enter the required details",Toast.LENGTH_SHORT).show();
                 }
+                else if(usn.length()<6){
+                    usn1.setError("USN cannot be less than 6 characters.");
+                }
                 else {
                     progressDialog.setTitle("Uploading data");
                     progressDialog.show();
@@ -166,12 +165,10 @@ public class Addmember extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     progressDialog.dismiss();
-                                    //Toast.makeText(Addmember.this, "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
                                     image = uri.toString();
                                     Store s = new Store(name, usn, email, branch, phoneNo, role, image);
                                     db = FirebaseDatabase.getInstance().getReference().child("FLC-members");
                                     db.child(usn).setValue(s);
-
                                     try {
                                         mAuth1.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                             @Override
@@ -217,9 +214,9 @@ public class Addmember extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onSupportNavigateUp(){
-        onBackPressed();
-        return true;
-    }
+    /*@Override
+    public void onBackPressed(){
+        Intent intent = new Intent(Addmember.this,Admin.class);
+        startActivity(intent);
+    }*/
 }

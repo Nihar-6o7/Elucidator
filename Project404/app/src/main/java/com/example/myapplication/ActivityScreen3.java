@@ -117,9 +117,9 @@ public class ActivityScreen3 extends AppCompatActivity {
             }
         });
     }
-   /* @Override
+    @Override
     public void onBackPressed(){
-        Intent intent = new Intent(ActivityScreen3.this,MainActivity.class);
-        startActivity(intent);
-    }*/
+        //super.onBackPressed();
+        finish();
+    }
 }

@@ -3,6 +3,8 @@ package com.example.myapplication;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -36,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     EditText username;
     EditText password;
     Button loginButton;
-
+    public static String em;
+    public static String pass;
     ProgressDialog progressDialog;
     TextView ForgotPass;
     TextView skip;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser nUser;
     DatabaseReference db;
     boolean vis;
+    String email,passwor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);
         skip = (TextView) findViewById(R.id.skip);
-        ForgotPass= (TextView) findViewById(R.id.ForgotPass);
+        ForgotPass = (TextView) findViewById(R.id.ForgotPass);
         progressDialog = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
         nUser = mAuth.getCurrentUser();
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Access.skipped=false;
+                Access.skipped = false;
                 performLogin();
             }
         });
@@ -70,19 +74,18 @@ public class MainActivity extends AppCompatActivity {
         password.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                final int Right =2;
-                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
-                    if(motionEvent.getRawX()>=password.getRight()- password.getCompoundDrawables()[Right].getBounds().width()){
+                final int Right = 2;
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (motionEvent.getRawX() >= password.getRight() - password.getCompoundDrawables()[Right].getBounds().width()) {
                         int selection = password.getSelectionEnd();
-                        if(vis){
-                            password.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_lock_24,0,R.drawable.ic_baseline_visibility_off_24,0);
+                        if (vis) {
+                            password.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_lock_24, 0, R.drawable.ic_baseline_visibility_off_24, 0);
                             password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                            vis=false;
-                        }
-                        else{
-                            password.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_lock_24,0,R.drawable.ic_baseline_visibility_24,0);
+                            vis = false;
+                        } else {
+                            password.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_lock_24, 0, R.drawable.ic_baseline_visibility_24, 0);
                             password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                            vis=true;
+                            vis = true;
                         }
                         password.setSelection(selection);
                         return true;
@@ -96,9 +99,9 @@ public class MainActivity extends AppCompatActivity {
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Access.skipped=true;
+                Access.skipped = true;
                 sendUserToNextActivity();
-                Toast.makeText(MainActivity.this,"skipped",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "skipped", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -111,42 +114,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void performLogin() {
-        String email = username.getText().toString().trim();
-        String passwor = password.getText().toString().trim();
-        if(email.isEmpty()) {
+        email = username.getText().toString().trim();
+        passwor = password.getText().toString().trim();
+        if (email.isEmpty()) {
             username.setError("email cannot be empty");
-        }
-        else if(passwor.isEmpty()) {
+        } else if (passwor.isEmpty()) {
             password.setError("password cannot be empty");
-        }
-        else {
+        } else {
             progressDialog.setMessage("Please wait");
             progressDialog.setTitle("Login");
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
 
-            mAuth.signInWithEmailAndPassword(email,passwor).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            mAuth.signInWithEmailAndPassword(email, passwor).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
+                        em=email;
+                        pass=passwor;
                         db = FirebaseDatabase.getInstance().getReference().child("FLC-members");
                         db.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                int c =0;
-                                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                    String r=dataSnapshot.child("role").getValue().toString();
+                                int c = 0;
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    String r = dataSnapshot.child("role").getValue().toString();
                                     if (dataSnapshot.child("email").getValue().toString().equals(email) && (r.equals("President") || r.equals("Vice President") || r.toLowerCase().contains("secretary"))) {
                                         c = 1;
                                         progressDialog.dismiss();
                                         sendUserToAdmin();
                                     }
                                 }
-                                    if(c==0){
-                                        progressDialog.dismiss();
-                                        sendUserToNextActivity();
-                                        Toast.makeText(MainActivity.this,"Login Successful.",Toast.LENGTH_SHORT).show();
-                                    }
+                                if (c == 0) {
+                                    progressDialog.dismiss();
+                                    sendUserToNextActivity();
+                                    Toast.makeText(MainActivity.this, "Login Successful.", Toast.LENGTH_SHORT).show();
+                                }
                             }
 
                             @Override
@@ -154,10 +157,9 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         });
-                    }
-                    else {
+                    } else {
                         progressDialog.dismiss();
-                        Toast.makeText(MainActivity.this,"Invalid email or password!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Invalid email or password!", Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -165,26 +167,50 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed(){
+    /*@Override
+    public void onBackPressed() {
         this.finishAffinity();
-    }
+    }*/
 
-    private void sendUserToNextActivity(){
-        Intent intent = new Intent(MainActivity.this,ActivityScreen3.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+    private void sendUserToNextActivity() {
+        Intent intent = new Intent(MainActivity.this, ActivityScreen3.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
-    private void sendUserToAdmin(){
-        Intent intent = new Intent(MainActivity.this,Admin.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+    private void sendUserToAdmin() {
+        Intent intent = new Intent(MainActivity.this, Admin.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
-    private void sendUserToOTP(){
-        Intent intent = new Intent(MainActivity.this,ForgotPassword.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+    private void sendUserToOTP() {
+        Intent intent = new Intent(MainActivity.this, ForgotPassword.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+
+    boolean doubleBackToExitPressedOnce = false;
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            finishAffinity();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
     }
 }
+
