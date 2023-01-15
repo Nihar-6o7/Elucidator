@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_page1"
+    tools:context=".SplashScreen">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/mainbg"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="345dp"
+        android:layout_height="313dp"
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/splash" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="455dp"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/cir"/>
+
+
+    <TextView
+        android:id="@+id/txtdescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Powered By "
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:padding="30dp"
+        android:letterSpacing="0.05"
+        android:lineSpacingExtra="10dp"
+        android:textStyle="normal"
+        android:layout_marginHorizontal="50dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="530dp"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/azx"
+        android:layout_width="105dp"
+        android:layout_height="150dp"
+        android:layout_marginHorizontal="200dp"
+        android:layout_marginTop="490dp"
+        android:src="@drawable/flclogo" />
+
+</RelativeLayout>
