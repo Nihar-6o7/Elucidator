@@ -34,6 +34,7 @@ public class searchById extends AppCompatActivity {
         String phone=intent.getStringExtra("Phone");
         String role=intent.getStringExtra("Role");
         String img=intent.getStringExtra("Image");
+        String h = "Hidden";
 
         ImageView s_img = findViewById(R.id.img);
         Glide.with((s_img).getContext()).load(intent.getStringExtra("Image")).placeholder(R.drawable.default_profile).circleCrop().into(s_img);
@@ -49,10 +50,20 @@ public class searchById extends AppCompatActivity {
         s_usn.setText(usn);
 
         TextView s_email = findViewById(R.id.email);
-        s_email.setText(email);
+        if(Access.skipped){
+            s_email.setText(h);
+        }
+        else{
+            s_email.setText(email);
+        }
 
         TextView s_no = findViewById(R.id.phone);
-        s_no.setText(phone);
+        if(Access.skipped){
+            s_no.setText(h);
+        }
+        else{
+            s_no.setText(phone);
+        }
 
         TextView s_role = findViewById(R.id.role);
         s_role.setText(role);
@@ -72,15 +83,7 @@ public class searchById extends AppCompatActivity {
             }
         });
     }
-   /* @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
+
    @Override
    public boolean onSupportNavigateUp(){
        onBackPressed();

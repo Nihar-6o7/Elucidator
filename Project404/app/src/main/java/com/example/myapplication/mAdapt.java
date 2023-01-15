@@ -43,7 +43,7 @@ public class mAdapt extends RecyclerView.Adapter<mAdapt.myViewHolder>
         Datum datum= data.get(position);
         holder.tv.setText(datum.getName());
         holder.tev.setText(datum.getRole());
-        Glide.with((holder.img).getContext()).load(datum.getImage()).placeholder(R.drawable.default_profile).circleCrop().into(holder.img);
+        Glide.with((holder.img).getContext()).load(datum.getImage()).placeholder(R.drawable.flclogo).circleCrop().into(holder.img);
     }
 
     @Override

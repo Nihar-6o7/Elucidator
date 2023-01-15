@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ActivityScreen3 extends AppCompatActivity {
 
@@ -48,15 +49,14 @@ public class ActivityScreen3 extends AppCompatActivity {
         s_branch=findViewById(R.id.branch);
         s_role=findViewById(R.id.role);
         progressDialog = new ProgressDialog(this);
-
         enter=findViewById(R.id.enterbutton);
         enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String usn=s_usn.getText().toString();
-                String name=s_name.getText().toString();
-                String branch=s_branch.getText().toString();
-                String role=s_role.getText().toString();
+                String usn=s_usn.getText().toString().trim();
+                String name=s_name.getText().toString().trim().toLowerCase();
+                String branch=s_branch.getText().toString().trim();
+                String role=s_role.getText().toString().trim().toLowerCase();
 
 
                 if(usn.isEmpty() && name.isEmpty() && branch.isEmpty() && role.isEmpty()){
@@ -117,4 +117,9 @@ public class ActivityScreen3 extends AppCompatActivity {
             }
         });
     }
+   /* @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(ActivityScreen3.this,MainActivity.class);
+        startActivity(intent);
+    }*/
 }

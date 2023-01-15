@@ -3,6 +3,10 @@ package com.example.myapplication;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +21,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+class Access{
+    static boolean skipped;
+}
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     TextView skip;
     FirebaseAuth mAuth;
     FirebaseUser nUser;
+    DatabaseReference db;
+    boolean vis;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,16 +62,43 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               performLogin();
+                Access.skipped=false;
+                performLogin();
+            }
+        });
+
+        password.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                final int Right =2;
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    if(motionEvent.getRawX()>=password.getRight()- password.getCompoundDrawables()[Right].getBounds().width()){
+                        int selection = password.getSelectionEnd();
+                        if(vis){
+                            password.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_lock_24,0,R.drawable.ic_baseline_visibility_off_24,0);
+                            password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                            vis=false;
+                        }
+                        else{
+                            password.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_lock_24,0,R.drawable.ic_baseline_visibility_24,0);
+                            password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                            vis=true;
+                        }
+                        password.setSelection(selection);
+                        return true;
+                    }
+                }
+
+                return false;
             }
         });
 
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Access.skipped=true;
                 sendUserToNextActivity();
                 Toast.makeText(MainActivity.this,"skipped",Toast.LENGTH_SHORT).show();
-
             }
         });
 
@@ -66,9 +109,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void performLogin() {
-        String email = username.getText().toString();
-        String passwor = password.getText().toString();
+        String email = username.getText().toString().trim();
+        String passwor = password.getText().toString().trim();
         if(email.isEmpty()) {
             username.setError("email cannot be empty");
         }
@@ -85,9 +129,31 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
-                        progressDialog.dismiss();
-                        sendUserToNextActivity();
-                        Toast.makeText(MainActivity.this,"Login Successful.",Toast.LENGTH_SHORT).show();
+                        db = FirebaseDatabase.getInstance().getReference().child("FLC-members");
+                        db.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                int c =0;
+                                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    String r=dataSnapshot.child("role").getValue().toString();
+                                    if (dataSnapshot.child("email").getValue().toString().equals(email) && (r.equals("President") || r.equals("Vice President") || r.toLowerCase().contains("secretary"))) {
+                                        c = 1;
+                                        progressDialog.dismiss();
+                                        sendUserToAdmin();
+                                    }
+                                }
+                                    if(c==0){
+                                        progressDialog.dismiss();
+                                        sendUserToNextActivity();
+                                        Toast.makeText(MainActivity.this,"Login Successful.",Toast.LENGTH_SHORT).show();
+                                    }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
                     else {
                         progressDialog.dismiss();
@@ -99,8 +165,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed(){
+        this.finishAffinity();
+    }
+
     private void sendUserToNextActivity(){
         Intent intent = new Intent(MainActivity.this,ActivityScreen3.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    private void sendUserToAdmin(){
+        Intent intent = new Intent(MainActivity.this,Admin.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

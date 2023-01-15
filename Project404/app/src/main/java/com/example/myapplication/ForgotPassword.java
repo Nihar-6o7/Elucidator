@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -25,7 +26,6 @@ public class ForgotPassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
-
         auth= FirebaseAuth.getInstance();
         Email1 = findViewById(R.id.Email1);
         send = findViewById(R.id.Send);
@@ -45,6 +45,12 @@ public class ForgotPassword extends AppCompatActivity {
         else {
             forgotPassword();
         }
+    }
+
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(ForgotPassword.this,MainActivity.class);
+        startActivity(intent);
     }
 
     private void forgotPassword(){
